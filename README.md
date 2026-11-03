@@ -73,17 +73,23 @@ A few observations stand out from the results:
 
 ### Figures
 
-**Confusion matrix (XGBoost):** predictions vs. reality on the test set.
+**Confusion matrix (XGBoost), test set.**
 
 ![Confusion matrix](reports/figures/confusion_matrix.png)
 
-**SHAP summary:** which features drive the model's fraud decisions.
+The matrix compares the model's predictions (columns) against the true labels (rows). The top-left cell shows 71,062 normal transactions correctly identified as normal, and only 17 normal transactions were wrongly flagged as fraud (top-right), so false alarms are very rare. In the bottom row, 101 real frauds were correctly caught (bottom-right) while 22 were missed (bottom-left). The strong diagonal confirms the model is accurate on the vast majority of cases, and the small bottom-left count is the main remaining weakness: a handful of frauds still slip through.
+
+**SHAP summary: which features drive the model's decisions.**
 
 ![SHAP summary](reports/figures/shap_summary.png)
 
-**Class imbalance:** fraud is a tiny fraction of all transactions, which is why accuracy alone is misleading.
+Each row is a feature, ordered from most to least important, and each dot is one transaction. Position on the x-axis shows how much that feature pushed a prediction toward fraud (right) or away from it (left), while colour shows whether the feature value was high (red) or low (blue). The anonymized features **V14, V4, V12, V10, and V11** are the strongest drivers. V14 stands out: low values (blue, far left) push strongly toward fraud, meaning an unusually low V14 is a key fraud signal the model relies on. `Amount` and `Time` have comparatively little influence. This confirms the model's decisions rest on a handful of interpretable signals rather than being an opaque black box.
+
+**Class imbalance in the dataset.**
 
 ![Class imbalance](reports/figures/class_imbalance.png)
+
+The bar chart shows the raw counts of the two classes. Normal transactions (class 0) number around 284,000, while fraud (class 1) is so rare that its bar is barely visible. This extreme imbalance is the central challenge of the problem and is exactly why plain accuracy is misleading and why precision-recall metrics and imbalance-handling techniques are used throughout the project.
 
 ## How to run
 
